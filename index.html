@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Evaluasi Pembelajaran - Geometri Transformasi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variabel Warna */
+        :root {
+            --color-primary: #854932; /* Cokelat Tua */
+            --color-secondary: #CC7722; /* Oranye/Emas - Aksen */
+            --color-bg-light: #f4f7f6; /* Latar Belakang Terang */
+            --color-card-light: #ffffff; /* Card Terang */
+            --color-text-dark: #333333; /* Teks Gelap */
+            --color-error: #D9534F; /* Merah */
+            --color-success: #5CB85C; /* Hijau */
+            --color-shadow: rgba(0, 0, 0, 0.15); 
+            --sidebar-width: 250px; 
+            /* Warna Header Konsisten */
+            --color-header-light: #A0522D; /* Solid: Sienna */
+        }
+
+        /* Dark Theme Variables */
+        .dark-theme {
+            --color-primary: #D8D8D8; 
+            --color-secondary: #FFC94A; 
+            --color-bg-light: #202c33; 
+            --color-card-light: #2c3940; 
+            --color-text-dark: #f0f0f0; 
+            --color-shadow: rgba(0, 0, 0, 0.4); 
+            /* Warna Header Dark Konsisten */
+            --color-header-dark: #1f3a5f; /* Solid: Midnight Blue */
+        }
+
+        /* Reset dan Gaya Dasar */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-bg-light);
+            color: var(--color-text-dark);
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden; 
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--color-secondary);
+        }
+        
+        /* ---------------------------------------------------------- */
+        /* 1. CSS HEADER (Full Layar & Solid) */
+        /* ---------------------------------------------------------- */
+        .navbar {
+            background-image: url('head-bg1.png'); 
+            background-size: cover; /* Memastikan gambar mengisi area sepenuhnya */
+            /* Menggunakan warna solid yang konsisten */
+            background-color: var(--color-header-light); 
+            color: white;
+            text-align: center; 
+            padding: 50px 30px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+            position: relative;
+            
+            /* Mengubah properti agar full screen */
+            min-height: 100vh; /* Pastikan selalu minimal setinggi viewport */
+            height: auto; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-direction: column; 
+        }
+        
+        .dark-theme .navbar {
+            background-image: url('head-bg1.png'); 
+            background-size: cover; /* Memastikan gambar mengisi area sepenuhnya */
+            /* Menggunakan warna solid yang konsisten */
+            background-color: var(--color-header-dark); /* Warna header dark solid */
+        }
+
+        .navbar h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        .navbar p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        .header-controls { 
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        
+        #theme-toggle {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* ---------------------------------------------------------- */
+        /* 2. & 3. CSS SIDEBAR & BUTTON FLASH */
+        /* ---------------------------------------------------------- */
+        #sidebar-nav {
+            position: fixed;
+            top: 0;
+            left: calc(-1 * var(--sidebar-width)); 
+            width: var(--sidebar-width); 
+            height: 100%;
+            background-color: var(--color-card-light); 
+            padding: 20px;
+            box-shadow: 2px 0 10px var(--color-shadow);
+            z-index: 998; 
+            overflow-y: auto;
+            transition: left 0.3s ease; 
+            border-right: 1px solid #eee;
+        }
+
+        .dark-theme #sidebar-nav {
+            background-color: #1e2830; 
+            border-right: 1px solid #333;
+        }
+        
+        .sidebar-open #sidebar-nav {
+            left: 0; 
+        }
+
+        #sidebar-nav h3 {
+            color: var(--color-primary);
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--color-secondary);
+            padding-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        #sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #sidebar-nav li a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        #sidebar-nav li a:hover {
+            background-color: var(--color-secondary);
+            color: white;
+        }
+        
+        #sidebar-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background-color: var(--color-secondary);
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        #sidebar-toggle:hover {
+            background-color: #e38d33;
+        }
+        .dark-theme #sidebar-toggle {
+             /* Menggunakan warna default secondary agar menonjol di dark mode */
+        }
+        
+        #content-wrapper {
+            margin-left: 0; 
+            transition: margin-left 0.3s ease;
+        }
+        .sidebar-open #content-wrapper {
+            margin-left: var(--sidebar-width); 
+        }
+        
+        /* CSS BUTTON & FLASH EFFECT */
+        .btn { 
+            padding: 10px 15px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s; 
+            position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+            display: inline-flex; /* Agar ikon dan teks sejajar */
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%; 
+            width: 50%; 
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5); 
+            transform: skewX(-30deg); 
+            transition: left 0.4s ease-in-out; 
+            pointer-events: none; 
+        }
+
+        .btn:hover:after {
+            left: 150%; 
+            transition: left 0.4s ease-in-out; 
+        }
+        
+        .btn-video { background-color: #F98866; color: white; } 
+        .btn-materi { background-color: #58CCED; color: var(--color-text-dark); } 
+        .btn-latihan { background-color: #FFC94A; color: var(--color-text-dark); } 
+        .btn-primary { background-color: var(--color-primary); color: white; }
+        .btn-game { background-color: #8C52FF; color: white; } 
+        .btn-disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* ---------------------------------------------------------- */
+        /* 3. & 5. CSS MODUL BAR (Card & Animasi Scroll) */
+        /* ---------------------------------------------------------- */
+        .content-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .modul-bar {
+            background-color: var(--color-card-light);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            box-shadow: 0 8px 20px var(--color-shadow); /* Card yang menonjol */
+            border-left: 6px solid var(--color-secondary); /* Aksen warna */
+            
+            /* Animasi Scroll: Default state (hidden) */
+            opacity: 0;
+            transform: translateY(50px); 
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .modul-bar.hidden {
+            opacity: 0;
+            transform: translateY(50px); 
+        }
+        
+        .modul-bar.modul-bar:not(.hidden) {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modul-icon {
+            font-size: 3em;
+            color: var(--color-secondary);
+            padding-top: 5px;
+            min-width: 60px; /* Memastikan ikon punya ruang yang cukup */
+            text-align: center;
+        }
+
+        .modul-content h2 {
+            margin-top: 0;
+            color: var(--color-primary);
+        }
+        
+        .button-group {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        /* ---------------------------------------------------------- */
+        /* 4. CSS FOOTER (Sederhana tapi Bagus) */
+        /* ---------------------------------------------------------- */
+        footer { 
+            background: linear-gradient(to right, var(--color-primary), #6d412b); 
+            color: white; 
+            padding: 30px 20px; 
+            margin-top: 50px; 
+            font-size: 0.9em; 
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .dark-theme footer {
+            background: linear-gradient(to right, #1f3a5f, #3a5f85); /* Darker gradient for dark mode */
+        }
+        .footer-content {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            text-align: left;
+            padding-bottom: 20px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .footer-section {
+            flex: 1;
+            padding: 0 15px;
+            min-width: 200px; 
+        }
+        .footer-section h4 {
+            margin-top: 0;
+            border-bottom: 2px solid var(--color-secondary);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .footer-section a {
+            color: #ddd;
+            transition: color 0.2s;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .footer-section a:hover {
+            color: var(--color-secondary);
+        }
+        .footer-bottom { 
+            text-align: center; 
+            padding-top: 15px; 
+        }
+        
+        /* ---------------------------------------------------------- */
+        /* 6. CSS AI Toggle (Pojok Kanan Bawah Mengambang) */
+        /* ---------------------------------------------------------- */
+        #ai-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            background-color: var(--color-primary); /* Warna solid */
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #ai-toggle-btn:hover {
+            background-color: #6d412b; /* Sedikit lebih gelap */
+            transform: scale(1.05);
+        }
+
+        /* ---------------------------------------------------------- */
+        /* CSS Modal (AI & Quiz) */
+        /* ---------------------------------------------------------- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1001; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: var(--color-card-light);
+            margin: 5% auto; 
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            position: relative;
+        }
+        .quiz-content {
+            max-width: 700px;
+        }
+        .close-btn {
+            color: var(--color-text-dark);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--color-error);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        /* Gaya AI Input */
+        .ai-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #ai-question {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-family: inherit;
+        }
+        .ai-response-area {
+            background-color: var(--color-bg-light);
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px dashed var(--color-secondary);
+            min-height: 50px;
+        }
+        .dark-theme .ai-response-area {
+            background-color: #3e4c54; /* Lebih gelap dari card dark */
+        }
+        
+        /* Loading state untuk AI */
+        .loading::after {
+            content: 'Sedang Berpikir...';
+            display: inline-block;
+            margin-left: 10px;
+            color: var(--color-secondary);
+        }
+
+        /* Quiz Specific Styles */
+        #question-area label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            font-weight: 500;
+        }
+        #question-area label:hover {
+            background-color: #f0f0f0;
+        }
+        .dark-theme #question-area label {
+             border-color: #444; 
+        }
+        .dark-theme #question-area label:hover {
+             background-color: #303030; 
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .dark-theme .progress-container {
+            background-color: #3e3e3e; 
+        }
+        .progress-bar {
+            height: 25px;
+            width: 0%;
+            background-color: var(--color-secondary);
+            transition: width 0.4s ease;
+        }
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            color: #333;
+            text-shadow: 0 0 2px white;
+        }
+        .dark-theme .progress-text {
+             color: var(--color-text-dark);
+             text-shadow: 0 0 2px black;
+        }
+        #quiz-controls {
+             display: flex;
+             justify-content: flex-end;
+             gap: 10px;
+             margin-top: 20px;
+        }
+        
+        /* Game Specific Styles */
+        .shuffled-word {
+            font-size: 2em;
+            letter-spacing: 10px;
+            margin: 20px 0;
+            text-align: center;
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+        #game-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            border: 2px solid var(--color-primary);
+            text-align: center;
+        }
+        .game-status {
+             padding: 10px;
+             border-radius: 6px;
+             text-align: center;
+             margin-top: 15px;
+        }
+        .game-status.success { background-color: rgba(92, 184, 92, 0.1); color: var(--color-success); }
+        .game-status.error { background-color: rgba(217, 83, 79, 0.1); color: var(--color-error); }
+
+        /* ---------------------------------------------------------- */
+        /* MEDIA QUERIES */
+        /* ---------------------------------------------------------- */
+        @media (max-width: 900px) {
+            #sidebar-nav {
+                left: calc(-1 * var(--sidebar-width)) !important; 
+            }
+            #content-wrapper {
+                margin-left: 0 !important;
+            }
+            .navbar {
+                height: auto; /* Biarkan konten menentukan tinggi di layar kecil */
+                min-height: 60vh;
+            }
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .modul-bar {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .modul-icon {
+                padding-top: 0;
+            }
+            .button-group {
+                justify-content: center;
+            }
+            #ai-toggle-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+
+    <div id="notification-area" class="notification"></div>
+    <audio id="click-sound" src="click.mp3.mp3" preload="auto"></audio> 
+    
+    <button id="sidebar-toggle" aria-label="Toggle Navigation" title="Buka/Tutup Navigasi">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <nav id="sidebar-nav">
+        <h3>Navigasi Modul</h3>
+        <ul>
+            <li><a href="#modul-1" title="Modul 1: Translasi"><i class="fas fa-arrows-alt"></i> Translasi</a></li>
+            <li><a href="#modul-2" title="Modul 2: Refleksi"><i class="fas fa-sync-alt"></i> Refleksi</a></li>
+            <li><a href="#modul-3" title="Modul 3: Rotasi"><i class="fas fa-redo-alt"></i> Rotasi</a></li>
+            <li><a href="#modul-4" title="Modul 4: Dilatasi"><i class="fas fa-expand-alt"></i> Dilatasi</a></li>
+            <li><a href="#modul-5" title="Modul 5: Uji Kompetensi"><i class="fas fa-graduation-cap"></i> Uji Kompetensi</a></li>
+            <li><a href="#modul-6" title="Modul 6: Game Interaktif"><i class="fas fa-puzzle-piece"></i> Game Interaktif</a></li>
+        </ul>
+    </nav>
+    
+    <div id="content-wrapper">
+
+        <header class="navbar">
+            <div class="header-controls"> 
+                <button id="theme-toggle" aria-label="Toggle light and dark mode" title="Ganti Tema Warna">
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+            
+            <div class="nav-center">
+                <h1>Eksplorasi Dunia Transformasi Geometri</h1>
+                <p>Pahami konsep Translasi, Refleksi, Rotasi, dan Dilatasi melalui video animasi, modul interaktif dan ujian kompetensi.</p>
+                <a href="#modul-1" class="btn btn-cta btn-primary"><i class="fas fa-compass"></i> Mulai Belajar Sekarang</a>
+            </div>
+        </header>
+
+        <main class="content-container">
+            
+            <section class="modul-bar" id="modul-1">
+                <div class="modul-icon"><i class="fas fa-arrows-alt"></i></div>
+                <div class="modul-content">
+                    <h2>Bar 1: Translasi (Pergeseran)</h2>
+                    <p>Pelajari cara memindahkan setiap titik pada bidang dengan jarak dan arah tertentu.</p>
+                    <div class="button-group">
+                        <a href="https://youtu.be/sdnEaelvZOQ" target="_blank" class="btn btn-video" data-modul="1" title="Tonton video penjelasan Translasi">
+                            <i class="fas fa-video"></i> Video Tutorial
+                        </a>
+                        <a href="https://share.google/XWxOZjLtMrQbUv457" target="_blank" class="btn btn-materi" data-modul="1" title="Baca materi lengkap tentang Translasi">
+                            <i class="fas fa-book"></i> Materi
+                        </a>
+                        <button class="btn btn-latihan" data-modul="1" title="Latihan soal Translasi"><i class="fas fa-pencil-alt"></i> Latihan Soal</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="modul-bar" id="modul-2">
+                <div class="modul-icon"><i class="fas fa-sync-alt"></i></div>
+                <div class="modul-content">
+                    <h2>Bar 2: Refleksi (Pencerminan)</h2>
+                    <p>Pahami konsep pencerminan objek terhadap sumbu atau garis tertentu.</p>
+                    <div class="button-group">
+                        <button class="btn btn-video" data-modul="2" title="Tonton video penjelasan Refleksi"><i class="fas fa-video"></i> Video Tutorial</button>
+                        <button class="btn btn-materi" data-modul="2" title="Baca materi lengkap tentang Refleksi"><i class="fas fa-book"></i> Materi Teks</button>
+                        <button class="btn btn-latihan" data-modul="2" title="Latihan soal Refleksi"><i class="fas fa-pencil-alt"></i> Latihan Soal</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="modul-bar" id="modul-3">
+                <div class="modul-icon"><i class="fas fa-redo-alt"></i></div>
+                <div class="modul-content">
+                    <h2>Bar 3: Rotasi (Perputaran)</h2>
+                    <p>Eksplorasi perputaran objek dengan titik pusat dan sudut tertentu.</p>
+                    <div class="button-group">
+                        <button class="btn btn-video" data-modul="3" title="Tonton video penjelasan Rotasi"><i class="fas fa-video"></i> Video Tutorial</button>
+                        <button class="btn btn-materi" data-modul="3" title="Baca materi lengkap tentang Rotasi"><i class="fas fa-book"></i> Materi Teks</button>
+                        <button class="btn btn-latihan" data-modul="3" title="Latihan soal Rotasi"><i class="fas fa-pencil-alt"></i> Latihan Soal</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="modul-bar" id="modul-4">
+                <div class="modul-icon"><i class="fas fa-expand-alt"></i></div>
+                <div class="modul-content">
+                    <h2>Bar 4: Dilatasi (Perkalian)</h2>
+                    <p>Pelajari cara memperbesar atau memperkecil objek dengan faktor skala.</p>
+                    <div class="button-group">
+                        <button class="btn btn-video" data-modul="4" title="Tonton video penjelasan Dilatasi"><i class="fas fa-video"></i> Video Tutorial</button>
+                        <button class="btn btn-materi" data-modul="4" title="Baca materi lengkap tentang Dilatasi"><i class="fas fa-book"></i> Materi Teks</button>
+                        <button class="btn btn-latihan" data-modul="4" title="Latihan soal Dilatasi"><i class="fas fa-pencil-alt"></i> Latihan Soal</button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="modul-bar" id="modul-5">
+                <div class="modul-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="modul-content">
+                    <h2>Bar 5: Uji Kompetensi (Geometri Transformasi)</h2>
+                    <p>Uji pemahaman Anda terhadap semua jenis Transformasi Geometri.</p>
+                    <div class="button-group modul-5-controls">
+                        <button class="btn btn-latihan" data-modul="5" id="start-quiz-btn" title="Mulai Ujian dengan 20 Soal"><i class="fas fa-pencil-alt"></i> **Mulai Ujian (20 Soal)**</button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="modul-bar" id="modul-6">
+                <div class="modul-icon"><i class="fas fa-puzzle-piece"></i></div>
+                <div class="modul-content">
+                    <h2>Bar 6: Game Interaktif (Susun Kata Kunci Transformasi)</h2>
+                    <p>Uji pengetahuan Anda dengan menyusun kata kunci penting dalam Geometri Transformasi.</p>
+                    <div class="button-group">
+                        <button class="btn btn-game" id="start-game-btn" title="Mulai permainan susun kata"><i class="fas fa-play"></i> Mulai Game</button>
+                        <button class="btn btn-primary" id="check-game-btn" disabled title="Cek apakah jawaban Anda benar"><i class="fas fa-check"></i> Cek Jawaban</button>
+                        <button class="btn btn-latihan" id="next-word-btn" disabled title="Lanjut ke kata kunci berikutnya"><i class="fas fa-forward"></i> Kata Berikutnya</button>
+                    </div>
+                    <div id="game-area" style="display: none; margin-top: 20px;">
+                        <h4 id="game-level-title">Level 1 (5 Kata)</h4>
+                        <p class="shuffled-word" id="shuffled-word">KLINATRAS</p>
+                        <input type="text" id="game-input" placeholder="Ketik jawaban Anda di sini...">
+                        <p id="game-message" class="game-status" style="margin-top: 15px; font-weight: 600;">Tekan Mulai Game untuk bermain!</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <button id="ai-toggle-btn" class="floating-btn" aria-label="Tanya Asisten AI" title="Tanya Asisten AI tentang Transformasi">
+            <i class="fas fa-robot"></i>
+        </button>
+        
+        <div id="ai-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-ai-modal">&times;</span>
+                <h3>🤖 Asisten Pembelajaran AI</h3>
+                <div class="ai-input-group">
+                    <input type="text" id="ai-question" placeholder="Ketik pertanyaan Anda tentang Geometri Transformasi...">
+                    <button id="ai-send-btn" class="btn btn-primary" title="Kirim pertanyaan"><i class="fas fa-paper-plane"></i> Kirim</button>
+                </div>
+                <div id="ai-response" class="ai-response-area">
+                    <p>Jawaban AI akan ditampilkan di sini.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="quiz-modal" class="modal">
+            <div class="modal-content quiz-content">
+                <span class="close-btn" id="close-quiz-btn">&times;</span>
+                <h3>Ujian Kompetensi Geometri Transformasi</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="quiz-progress"></div>
+                    <div class="progress-text" id="quiz-progress-text">Soal 0 dari 20</div>
+                </div>
+                <div id="question-area">
+                    </div>
+                <div id="quiz-controls">
+                    <button class="btn btn-primary" id="next-question-btn" disabled title="Lanjut ke soal berikutnya">Soal Selanjutnya</button> 
+                    <button class="btn btn-latihan" id="submit-quiz-btn" style="display: none;" title="Selesaikan ujian dan lihat skor">Selesai & Cek Skor</button>
+                </div>
+                <div id="quiz-result" class="ai-response-area" style="display: none;">
+                    </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Tentang Modul</h4>
+                    <p>Sistem ini dirancang untuk mempermudah pemahaman Geometri Transformasi melalui materi interaktif, video, dan simulasi.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Bantuan & Dukungan</h4>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> Kontak Kami</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Ikuti Kami</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025_Tri Wulandari_B2B023013_MEDIA PEMBELAJARAN MATEMATIKA. Hak Cipta Dilindungi.</p>
+            </div>
+        </footer>
+
+    </div> 
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // === DOM Elements ===
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const clickSound = document.getElementById('click-sound'); 
+            const modulBars = document.querySelectorAll('.modul-bar'); 
+            const sidebarToggle = document.getElementById('sidebar-toggle'); 
+            const sidebarNav = document.getElementById('sidebar-nav');
+            const contentWrapper = document.getElementById('content-wrapper');
+            const aiToggleBtn = document.getElementById('ai-toggle-btn');
+            const aiModal = document.getElementById('ai-modal');
+            const aiQuestionInput = document.getElementById('ai-question'); 
+            const aiSendBtn = document.getElementById('ai-send-btn'); 
+            const aiResponseArea = document.getElementById('ai-response'); 
+            const notificationArea = document.getElementById('notification-area');
+
+            // Quiz Elements
+            const startQuizBtn = document.getElementById('start-quiz-btn');
+            const quizModal = document.getElementById('quiz-modal');
+            const nextQuestionBtn = document.getElementById('next-question-btn');
+            const submitQuizBtn = document.getElementById('submit-quiz-btn');
+            const quizProgress = document.getElementById('quiz-progress');
+            const quizProgressText = document.getElementById('quiz-progress-text');
+            const quizResultArea = document.getElementById('quiz-result');
+            const questionArea = document.getElementById('question-area');
+
+            // Game Elements
+            const startGameBtn = document.getElementById('start-game-btn');
+            const checkGameBtn = document.getElementById('check-game-btn');
+            const nextWordBtn = document.getElementById('next-word-btn');
+            const gameArea = document.getElementById('game-area');
+            const shuffledWordEl = document.getElementById('shuffled-word');
+            const gameInput = document.getElementById('game-input');
+            const gameMessageEl = document.getElementById('game-message');
+            const gameLevelTitleEl = document.getElementById('game-level-title');
+
+            // Global Quiz Variables
+            let currentQuestionIndex = 0;
+            let userAnswers = [];
+            let activeQuestions = []; 
+            let quizMode = 'final'; 
+            const NUM_QUESTIONS_FINAL = 20; 
+            const NUM_QUESTIONS_LATIHAN = 5; 
+            
+            // Global Game Variables
+            let gameWords = [];
+            let currentGameLevel = 1;
+            let currentWordIndex = 0;
+            let gameScore = 0;
+            let totalWordsInLevel = 0;
+
+            // === Fungsi Play Sound Effect ===
+            const playClickSound = () => {
+                const sound = clickSound.cloneNode();
+                sound.play().catch(e => console.log("Sound play error:", e));
+            };
+
+            // Fungsi Notifikasi Visual
+            const showNotification = (message, type = 'default') => {
+                notificationArea.textContent = message;
+                notificationArea.className = 'notification'; 
+                notificationArea.classList.add('show'); 
+                if (type === 'success') {
+                    notificationArea.classList.add('success');
+                } else if (type === 'error') {
+                    notificationArea.classList.add('error');
+                } else {
+                    // Kelas default
+                }
+
+                setTimeout(() => {
+                    notificationArea.classList.remove('show');
+                }, 3000); 
+            };
+
+            // === Universal Modal Close Logic ===
+            const closeModal = (modal) => {
+                modal.style.display = 'none';
+            };
+            
+            // PERBAIKAN BUG TOMBOL CLOSE: Menambahkan event listener ke semua tombol silang
+            document.querySelectorAll('.modal .close-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const parentModal = button.closest('.modal');
+                    if (parentModal) {
+                        closeModal(parentModal);
+                        playClickSound(); 
+                    }
+                });
+            });
+
+            // Close modal saat klik di luar area modal (backdrop)
+            window.addEventListener('click', (event) => {
+                if (event.target === aiModal) closeModal(aiModal);
+                if (event.target === quizModal) closeModal(quizModal);
+            });
+
+
+            // === 1. & 2. Theme & Sidebar Logic (Dipertahankan) ===
+            const toggleTheme = () => {
+                body.classList.toggle('dark-theme');
+                const isDark = body.classList.contains('dark-theme');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            };
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            themeToggle.addEventListener('click', () => {
+                toggleTheme();
+                playClickSound(); 
+            });
+            
+            const toggleSidebar = () => {
+                body.classList.toggle('sidebar-open');
+                const isSidebarOpen = body.classList.contains('sidebar-open');
+                sidebarToggle.innerHTML = isSidebarOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+                playClickSound();
+            };
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            contentWrapper.addEventListener('click', () => {
+                 if (body.classList.contains('sidebar-open')) {
+                    toggleSidebar();
+                }
+            });
+
+            // === 3. Bank Soal ===
+            const questionBanks = {
+                // Bar 1: Translasi (5 Soal)
+                '1': [
+                    { text: "Hasil translasi titik A(2, 3) oleh T(4, 1) adalah...", options: ["A'(6, 4)", "A'(-2, 2)", "A'(4, 3)", "A'(8, 3)"], answer: "A'(6, 4)" },
+                    { text: "Jika P'(5, -2) adalah bayangan dari P(3, 1) oleh translasi T(a, b), maka vektor translasinya adalah...", options: ["T(2, -3)", "T(8, -1)", "T(-2, 3)", "T(2, 3)"], answer: "T(2, -3)" },
+                    { text: "Apa nama lain dari translasi dalam Geometri Transformasi?", options: ["Pencerminan", "Perputaran", "Perkalian", "Pergeseran"], answer: "Pergeseran" },
+                    { text: "Translasi bersifat **isometri**, yang berarti...", options: ["Mengubah bentuk", "Mengubah ukuran", "Mempertahankan bentuk dan ukuran", "Hanya mengubah arah"], answer: "Mempertahankan bentuk dan ukuran" },
+                    { text: "Bayangan titik B(-1, 5) oleh T(-3, -2) adalah...", options: ["B'(-4, 3)", "B'(2, 7)", "B'(-3, 10)", "B'(4, -3)"], answer: "B'(-4, 3)" },
+                ],
+                // Bar 2: Refleksi (5 Soal)
+                '2': [
+                    { text: "Bayangan titik P(4, -3) jika dicerminkan terhadap sumbu-X adalah...", options: ["P'(-4, -3)", "P'(4, 3)", "P'(-4, 3)", "P'(-3, 4)"], answer: "P'(4, 3)" },
+                    { text: "Jika titik Q(-2, 5) direfleksikan terhadap sumbu-Y, bayangannya adalah...", options: ["Q'(-2, -5)", "Q'(2, 5)", "Q'(5, -2)", "Q'(2, -5)"], answer: "Q'(2, 5)" },
+                    { text: "Refleksi titik R(1, 2) terhadap garis y = x menghasilkan bayangan...", options: ["R'(-1, -2)", "R'(2, 1)", "R'(-2, -1)", "R'(1, 2)"], answer: "R'(2, 1)" },
+                    { text: "Sumbu cermin yang mengubah titik (x, y) menjadi (-y, -x) adalah garis...", options: ["y = x", "y = -x", "sumbu-X", "sumbu-Y"], answer: "y = -x" },
+                    { text: "Pencerminan (Refleksi) juga termasuk jenis transformasi yang bersifat...", options: ["Dilatasi", "Non-Isometri", "Isometri", "Skalar"], answer: "Isometri" },
+                ],
+                // Bar 3: Rotasi (5 Soal)
+                '3': [
+                    { text: "Rotasi 90° berlawanan arah jarum jam terhadap titik pusat O(0, 0) mengubah A(3, 4) menjadi...", options: ["A'(4, 3)", "A'(-4, 3)", "A'(-3, -4)", "A'(3, -4)"], answer: "A'(-4, 3)" },
+                    { text: "Jika titik B(2, -5) dirotasi 180° terhadap O(0, 0), bayangannya adalah...", options: ["B'(-2, 5)", "B'(-5, 2)", "B'(5, -2)", "B'(2, 5)"], answer: "B'(-2, 5)" },
+                    { text: "Rotasi 270° searah jarum jam terhadap titik pusat (0, 0) ekuivalen dengan rotasi...", options: ["90° searah jarum jam", "90° berlawanan jarum jam", "180°", "360°"], answer: "90° berlawanan jarum jam" },
+                    { text: "Komponen utama yang harus ditentukan dalam rotasi adalah...", options: ["Vektor pergeseran dan sumbu", "Faktor skala dan sumbu", "Titik pusat dan sudut putar", "Garis cermin dan jarak"], answer: "Titik pusat dan sudut putar" },
+                    { text: "Sebuah objek diputar 360°. Transformasi ini disebut transformasi...", options: ["Identitas", "Dilatasi", "Translasi", "Refleksi"], answer: "Identitas" },
+                ],
+                // Bar 4: Dilatasi (5 Soal)
+                '4': [
+                    { text: "Titik P(6, 9) didilatasi dengan pusat O(0, 0) dan faktor skala k = 1/3. Bayangannya adalah...", options: ["P'(2, 3)", "P'(18, 27)", "P'(3, 6)", "P'(6, 9)"], answer: "P'(2, 3)" },
+                    { text: "Jika dilatasi mengubah titik (x, y) menjadi (2x, 2y) dengan pusat (0, 0), maka faktor skalanya adalah...", options: ["1/2", "2", "-2", "4"], answer: "2" },
+                    { text: "Dilatasi termasuk transformasi **non-isometri** karena...", options: ["Mengubah bentuk", "Mengubah ukuran", "Mengubah arah", "Mengubah posisi"], answer: "Mengubah ukuran" },
+                    { text: "Titik Q(1, 2) didilatasi menjadi Q'(5, 10). Faktor skala dilatasi (pusat O) adalah...", options: ["2", "4", "5", "10"], answer: "5" },
+                    { text: "Untuk memperkecil sebuah objek, faktor skala (k) harus memenuhi syarat...", options: ["k > 1", "k < 0", "0 < k < 1", "k = 1"], answer: "0 < k < 1" },
+                ],
+                // Bar 5: Uji Kompetensi (20 Soal, gabungan 1-4)
+                'final': [
+                    { text: "Hasil translasi titik A(2, 3) oleh T(4, 1) adalah...", options: ["A'(6, 4)", "A'(-2, 2)", "A'(4, 3)", "A'(8, 3)"], answer: "A'(6, 4)" },
+                    { text: "Bayangan titik P(4, -3) jika dicerminkan terhadap sumbu-X adalah...", options: ["P'(-4, -3)", "P'(4, 3)", "P'(-4, 3)", "P'(-3, 4)"], answer: "P'(4, 3)" },
+                    { text: "Rotasi 90° berlawanan arah jarum jam terhadap titik pusat O(0, 0) mengubah A(3, 4) menjadi...", options: ["A'(4, 3)", "A'(-4, 3)", "A'(-3, -4)", "A'(3, -4)"], answer: "A'(-4, 3)" },
+                    { text: "Titik P(6, 9) didilatasi dengan pusat O(0, 0) dan faktor skala k = 1/3. Bayangannya adalah...", options: ["P'(2, 3)", "P'(18, 27)", "P'(3, 6)", "P'(6, 9)"], answer: "P'(2, 3)" },
+                    { text: "Jika P'(5, -2) adalah bayangan dari P(3, 1) oleh translasi T(a, b), maka vektor translasinya adalah...", options: ["T(2, -3)", "T(8, -1)", "T(-2, 3)", "T(2, 3)"], answer: "T(2, -3)" },
+                    { text: "Sumbu cermin yang mengubah titik (x, y) menjadi (-y, -x) adalah garis...", options: ["y = x", "y = -x", "sumbu-X", "sumbu-Y"], answer: "y = -x" },
+                    { text: "Jika titik B(2, -5) dirotasi 180° terhadap O(0, 0), bayangannya adalah...", options: ["B'(-2, 5)", "B'(-5, 2)", "B'(5, -2)", "B'(2, 5)"], answer: "B'(-2, 5)" },
+                    { text: "Dilatasi termasuk transformasi **non-isometri** karena...", options: ["Mengubah bentuk", "Mengubah ukuran", "Mengubah arah", "Mengubah posisi"], answer: "Mengubah ukuran" },
+                    { text: "Apa nama lain dari translasi dalam Geometri Transformasi?", options: ["Pencerminan", "Perputaran", "Perkalian", "Pergeseran"], answer: "Pergeseran" },
+                    { text: "Refleksi titik R(1, 2) terhadap garis y = x menghasilkan bayangan...", options: ["R'(-1, -2)", "R'(2, 1)", "R'(-2, -1)", "R'(1, 2)"], answer: "R'(2, 1)" },
+                    { text: "Rotasi 270° searah jarum jam terhadap titik pusat (0, 0) ekuivalen dengan rotasi...", options: ["90° searah jarum jam", "90° berlawanan jarum jam", "180°", "360°"], answer: "90° berlawanan jarum jam" },
+                    { text: "Untuk memperkecil sebuah objek, faktor skala (k) harus memenuhi syarat...", options: ["k > 1", "k < 0", "0 < k < 1", "k = 1"], answer: "0 < k < 1" },
+                    { text: "Transformasi yang memindahkan setiap titik pada bidang dengan jarak dan arah tertentu disebut...", options: ["Refleksi", "Rotasi", "Translasi", "Dilatasi"], answer: "Translasi" },
+                    { text: "Bayangan titik Q(-2, 5) direfleksikan terhadap sumbu-Y, bayangannya adalah...", options: ["Q'(-2, -5)", "Q'(2, 5)", "Q'(5, -2)", "Q'(2, -5)"], answer: "Q'(2, 5)" },
+                    { text: "Komponen utama yang harus ditentukan dalam rotasi adalah...", options: ["Vektor pergeseran dan sumbu", "Faktor skala dan sumbu", "Titik pusat dan sudut putar", "Garis cermin dan jarak"], answer: "Titik pusat dan sudut putar" },
+                    { text: "Titik Q(1, 2) didilatasi menjadi Q'(5, 10). Faktor skala dilatasi (pusat O) adalah...", options: ["2", "4", "5", "10"], answer: "5" },
+                    { text: "Jenis transformasi yang merupakan isometri adalah...", options: ["Translasi dan Dilatasi", "Rotasi dan Dilatasi", "Translasi, Refleksi, dan Rotasi", "Semua jenis transformasi"], answer: "Translasi, Refleksi, dan Rotasi" },
+                    { text: "Bayangan titik B(-1, 5) oleh T(-3, -2) adalah...", options: ["B'(-4, 3)", "B'(2, 7)", "B'(-3, 10)", "B'(4, -3)"], answer: "B'(-4, 3)" },
+                    { text: "Pencerminan titik (x, y) terhadap garis y = -x adalah...", options: ["(-y, -x)", "(-x, y)", "(y, x)", "(-x, -y)"], answer: "(-y, -x)" },
+                    { text: "Jika dilatasi mengubah titik (x, y) menjadi (2x, 2y) dengan pusat (0, 0), maka faktor skalanya adalah...", options: ["1/2", "2", "-2", "4"], answer: "2" },
+                ].sort(() => Math.random() - 0.5) 
+            };
+            
+            // === 4. Game Kata Kunci ===
+            const gameData = {
+                1: { title: "Level 1 (5 Kata - Mudah)", words: ["TRANSLASI", "REFLEKSI", "ROTASI", "DILATASI", "ISOMETRI"] },
+                2: { title: "Level 2 (7 Kata - Sedang)", words: ["VEKTOR", "SUMBU", "PUSAT", "SKALA", "BAYANGAN", "KOORDINAT", "MATRIKS"] },
+                3: { title: "Level 3 (10 Kata - Sulit)", words: ["PERGESERAN", "PENCERMINAN", "PERPUTARAN", "PERKALIAN", "INVARIAN", "KONGRUEN", "TRANSFORMASI", "ETNOMATEMATIKA", "TITIK", "BIDANG"] }
+            };
+
+            // Fungsi pengacak kata
+            const shuffleWord = (word) => {
+                let arr = word.split('');
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap
+                }
+                return arr.join('');
+            };
+
+            const updateGameControls = () => {
+                const isGameRunning = gameArea.style.display === 'block';
+                const isWordCompleted = currentWordIndex >= totalWordsInLevel;
+
+                startGameBtn.textContent = (currentGameLevel > 3) ? 'Game Selesai' : `Mulai Level ${currentGameLevel}`;
+                startGameBtn.disabled = isGameRunning && !isWordCompleted;
+
+                checkGameBtn.disabled = !isGameRunning || isWordCompleted;
+                nextWordBtn.disabled = !isWordRunning || isWordCompleted;
+            };
+
+            const renderGame = () => {
+                gameLevelTitleEl.textContent = gameData[currentGameLevel].title;
+                totalWordsInLevel = gameData[currentGameLevel].words.length;
+                gameWords = gameData[currentGameLevel].words.slice(); // Copy array
+
+                if (currentWordIndex < totalWordsInLevel) {
+                    const currentWord = gameWords[currentWordIndex];
+                    shuffledWordEl.textContent = shuffleWord(currentWord);
+                    gameInput.value = '';
+                    gameInput.focus();
+                    gameMessageEl.textContent = `Tebak kata ke ${currentWordIndex + 1} dari ${totalWordsInLevel}. Skor: ${gameScore}`;
+                    gameMessageEl.className = 'game-status'; 
+                } else {
+                    // Level Selesai
+                    gameArea.style.display = 'none';
+                    showNotification(`Level ${currentGameLevel} Selesai! Skor Anda: ${gameScore} / ${totalWordsInLevel}`, 'success');
+                    
+                    if (currentGameLevel < 3) {
+                        currentGameLevel++;
+                        currentWordIndex = 0;
+                        gameScore = 0;
+                        startGameBtn.textContent = `Lanjut Level ${currentGameLevel}`;
+                        startGameBtn.disabled = false;
+                        gameMessageEl.textContent = `Siap untuk Level ${currentGameLevel} (${gameData[currentGameLevel].title.split('(')[1].replace(')', '')})?`;
+                        gameMessageEl.className = 'game-status'; 
+                        
+                    } else {
+                        startGameBtn.textContent = 'Game Selesai!';
+                        startGameBtn.disabled = true;
+                        gameMessageEl.textContent = `Selamat! Anda menyelesaikan semua level.`;
+                        gameMessageEl.className = 'game-status success'; 
+                        
+                    }
+                }
+                updateGameControls();
+            };
+
+            const checkAnswer = () => {
+                if (currentWordIndex >= totalWordsInLevel) return;
+
+                const userAnswer = gameInput.value.trim().toUpperCase();
+                const correctWord = gameWords[currentWordIndex];
+
+                if (userAnswer === correctWord) {
+                    gameScore++;
+                    gameMessageEl.textContent = `✅ Benar! Kata: ${correctWord}. Skor: ${gameScore}`;
+                    gameMessageEl.className = 'game-status success'; 
+                    gameInput.disabled = true;
+                    nextWordBtn.disabled = false;
+                    checkGameBtn.disabled = true;
+                } else {
+                    gameMessageEl.textContent = `❌ Salah. Coba lagi. Skor saat ini: ${gameScore}`;
+                    gameMessageEl.className = 'game-status error'; 
+                }
+            };
+            
+            const nextWord = () => {
+                if (currentWordIndex < totalWordsInLevel - 1) {
+                    currentWordIndex++;
+                    gameInput.disabled = false;
+                    checkGameBtn.disabled = false;
+                    nextWordBtn.disabled = true;
+                    renderGame();
+                } else {
+                    currentWordIndex++; // Pindah ke status selesai
+                    renderGame();
+                }
+                playClickSound();
+            };
+
+            startGameBtn.addEventListener('click', () => {
+                if (currentGameLevel > 3) return;
+                gameArea.style.display = 'block';
+                gameInput.disabled = false;
+                currentWordIndex = 0;
+                gameScore = 0;
+                renderGame();
+                playClickSound();
+            });
+
+            checkGameBtn.addEventListener('click', () => {
+                checkAnswer();
+                playClickSound();
+            });
+
+            nextWordBtn.addEventListener('click', nextWord);
+
+            gameInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !checkGameBtn.disabled) {
+                    e.preventDefault();
+                    checkAnswer();
+                    playClickSound();
+                } else if (e.key === 'Enter' && !nextWordBtn.disabled) {
+                    e.preventDefault();
+                    nextWord();
+                }
+            });
+
+
+            // === 5. Quiz Logic ===
+            const getQuestion = (index) => activeQuestions[index];
+            
+            const displayFeedback = (index) => {
+                const q = getQuestion(index);
+                const selectedAnswer = userAnswers[index];
+                const isCorrect = selectedAnswer === q.answer;
+                
+                const feedbackArea = document.createElement('div');
+                feedbackArea.className = 'latihan-feedback p-3 mt-3';
+                feedbackArea.style.borderRadius = '8px';
+                feedbackArea.style.border = isCorrect ? '2px solid var(--color-success)' : '2px solid var(--color-error)';
+                feedbackArea.style.backgroundColor = isCorrect ? 'rgba(92, 184, 92, 0.1)' : 'rgba(217, 83, 79, 0.1)';
+                feedbackArea.style.color = 'var(--color-text-dark)';
+
+                feedbackArea.innerHTML = `
+                    <p><strong>${isCorrect ? '🎉 Jawaban Anda Benar!' : '❌ Jawaban Anda Salah.'}</strong></p>
+                    <p>Jawaban yang benar adalah: <strong>${q.answer}</strong></p>
+                `;
+                
+                document.getElementById('question-area').appendChild(feedbackArea);
+                
+                // Nonaktifkan semua opsi setelah dicek dan beri highlight
+                document.querySelectorAll('#quiz-form input[name="answer"]').forEach(input => {
+                    input.disabled = true;
+                    const label = input.parentElement;
+                    if (input.value === q.answer) {
+                        label.style.backgroundColor = 'rgba(92, 184, 92, 0.2)'; // Warna hijau untuk jawaban benar
+                    } else if (input.checked && !isCorrect) {
+                        label.style.backgroundColor = 'rgba(217, 83, 79, 0.2)'; // Warna merah untuk jawaban salah
+                    }
+                });
+            };
+
+            const renderQuestion = (index) => {
+                const q = getQuestion(index);
+                if (!q) return;
+
+                const totalQuestions = quizMode === 'final' ? NUM_QUESTIONS_FINAL : NUM_QUESTIONS_LATIHAN;
+                const displayIndex = index + 1;
+                
+                questionArea.innerHTML = '';
+                
+                // Hapus tombol Cek Jawaban yang mungkin tersisa
+                const existingCheckButton = document.getElementById('check-answer-btn');
+                if (existingCheckButton) existingCheckButton.remove();
+                
+                // Reset quiz-result area
+                quizResultArea.style.display = 'none';
+
+                questionArea.innerHTML += `
+                    <h4 style="color: var(--color-primary);">Soal ${displayIndex} dari ${totalQuestions}:</h4>
+                    <p><strong>${q.text}</strong></p>
+                    <form id="quiz-form">
+                        ${q.options.map((option, i) => `
+                            <label>
+                                <input type="radio" name="answer" value="${option}" id="option-${i}"
+                                    ${userAnswers[index] === option ? 'checked' : ''}
+                                    ${userAnswers[index] !== null && quizMode === 'latihan' ? 'disabled' : ''}>
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </form>
+                `;
+                
+                const form = document.getElementById('quiz-form');
+
+                // Reset display tombol kontrol utama
+                nextQuestionBtn.style.display = 'inline-block';
+                submitQuizBtn.style.display = 'none';
+                
+                nextQuestionBtn.textContent = 'Soal Selanjutnya';
+                nextQuestionBtn.disabled = true;
+
+                // Hapus feedback sebelumnya
+                const previousFeedback = questionArea.querySelector('.latihan-feedback');
+                if(previousFeedback) previousFeedback.remove();
+
+                if (quizMode === 'latihan') {
+                    nextQuestionBtn.textContent = (index === totalQuestions - 1) ? 'Lihat Hasil Akhir' : 'Soal Selanjutnya';
+                    nextQuestionBtn.style.display = 'none'; // Sembunyikan Next/Hasil Awalnya
+
+                    if (userAnswers[index] === null) {
+                        // Jika belum dijawab, buat tombol Cek Jawaban
+                        const checkButton = document.createElement('button');
+                        checkButton.textContent = 'Cek Jawaban';
+                        checkButton.className = 'btn btn-latihan';
+                        checkButton.id = 'check-answer-btn';
+                        questionArea.appendChild(checkButton);
+                        
+                        checkButton.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            playClickSound();
+                            const selected = form.querySelector('input[name="answer"]:checked');
+                            if (!selected) {
+                                showNotification('⚠️ Pilih jawaban terlebih dahulu!', 'error');
+                                return;
+                            }
+                            
+                            userAnswers[index] = selected.value; 
+                            checkButton.style.display = 'none'; 
+                            
+                            displayFeedback(index);
+                            updateProgress();
+
+                            // Setelah dicek, tampilkan tombol next/hasil
+                            nextQuestionBtn.style.display = 'inline-block';
+                            nextQuestionBtn.disabled = false; 
+                        });
+                    } else if (userAnswers[index] !== null) {
+                        // Tampilkan feedback jika sudah dijawab (saat kembali ke soal)
+                        displayFeedback(index);
+                        nextQuestionBtn.style.display = 'inline-block';
+                        nextQuestionBtn.disabled = false; 
+                    }
+                } else if (quizMode === 'final') {
+                    // Logika Mode Ujian Akhir
+                    nextQuestionBtn.style.display = (index === totalQuestions - 1) ? 'none' : 'inline-block';
+                    submitQuizBtn.style.display = (index === totalQuestions - 1) ? 'inline-block' : 'none';
+                    nextQuestionBtn.disabled = !userAnswers[index]; 
+                    submitQuizBtn.disabled = !userAnswers[index]; 
+                    
+                    if (userAnswers[index] !== null) {
+                         nextQuestionBtn.disabled = false;
+                         submitQuizBtn.disabled = false;
+                    }
+                    
+                    form.addEventListener('change', () => {
+                        const selected = form.querySelector('input[name="answer"]:checked');
+                        if (selected) {
+                            userAnswers[index] = selected.value;
+                            nextQuestionBtn.disabled = false; 
+                            submitQuizBtn.disabled = false;
+                        }
+                    }); 
+                }
+            };
+
+            const calculateResult = (numQuestions) => {
+                let correctCount = 0;
+                for (let i = 0; i < numQuestions; i++) {
+                    const q = getQuestion(i);
+                    if (userAnswers[i] === q.answer) {
+                        correctCount++;
+                    }
+                }
+                return { correctCount, numQuestions };
+            };
+            
+            const displayFinalResult = (mode) => {
+                const numQuestions = mode === 'final' ? NUM_QUESTIONS_FINAL : NUM_QUESTIONS_LATIHAN;
+                const { correctCount } = calculateResult(numQuestions);
+                
+                const score = (correctCount / numQuestions) * 100;
+                const isPassed = mode === 'final' ? score >= 70 : true; 
+
+                quizResultArea.style.display = 'block';
+                document.getElementById('question-area').innerHTML = `<h4>✅ ${mode === 'final' ? 'Ujian Selesai! Hasil Kompetensi:' : 'Latihan Selesai! Hasil Anda:'}</h4>`;
+                
+                quizResultArea.innerHTML = `
+                    <p>Total Soal Dijawab: <strong>${numQuestions}</strong></p>
+                    <p>Jawaban Benar: <strong style="color: var(--color-success);">${correctCount}</strong></p>
+                    <p>Jawaban Salah: <strong style="color: var(--color-error);">${numQuestions - correctCount}</strong></p>
+                    <p><h3>Skor Akhir Anda: <span style="color: ${isPassed ? 'var(--color-success)' : 'var(--color-error)'}">${score.toFixed(0)}</span></h3></p>
+                    <p style="text-align: center; margin-top: 20px; font-style: italic;">Evaluasi: ${mode === 'final' ? (isPassed ? 'Selamat! Anda mencapai batas Kompeten.' : 'Perlu memperdalam materi. Skor minimal 70.') : 'Teruslah berlatih untuk meningkatkan pemahaman!'}</p>
+                `;
+                
+                showNotification(`${mode === 'final' ? 'Ujian' : 'Latihan'} Selesai. Skor Anda: ${score.toFixed(0)}`, isPassed ? 'success' : 'error');
+
+                nextQuestionBtn.style.display = 'none';
+                submitQuizBtn.style.display = 'none';
+            }
+
+            const updateProgress = () => {
+                const totalQuestions = quizMode === 'final' ? NUM_QUESTIONS_FINAL : NUM_QUESTIONS_LATIHAN;
+                // Di mode latihan, hitung jawaban yang sudah dicek. Di mode final, hitung yang sudah dipilih.
+                const completedQuestions = userAnswers.filter(answer => answer !== null).length; 
+                const progressValue = (completedQuestions / totalQuestions) * 100;
+                
+                quizProgress.style.width = `${progressValue}%`;
+                
+                // Jika sudah selesai, tampilkan total soal, jika belum, tampilkan soal yang sedang dikerjakan.
+                const progressDisplay = (currentQuestionIndex >= totalQuestions) ? totalQuestions : currentQuestionIndex + 1;
+
+                quizProgressText.textContent = `Soal ${progressDisplay} dari ${totalQuestions}`;
+                if (currentQuestionIndex >= totalQuestions) {
+                    quizProgressText.textContent = `Selesai: ${totalQuestions} dari ${totalQuestions}`;
+                }
+            };
+            
+            const startQuiz = (modulNum) => {
+                const isFinal = modulNum === '5';
+                quizMode = isFinal ? 'final' : 'latihan';
+                
+                const questionsToUse = isFinal ? questionBanks['final'] : questionBanks[modulNum];
+                activeQuestions = questionsToUse.slice().sort(() => Math.random() - 0.5); 
+                
+                const totalQ = isFinal ? NUM_QUESTIONS_FINAL : NUM_QUESTIONS_LATIHAN;
+                activeQuestions = activeQuestions.slice(0, totalQ); // Pastikan jumlah soal sesuai
+                
+                currentQuestionIndex = 0;
+                userAnswers = Array(totalQ).fill(null);
+                
+                // Ambil judul modul dari elemen terdekat
+                const titleElement = document.getElementById(`modul-${modulNum}`) || document.getElementById('modul-5');
+                const titleText = titleElement.querySelector('h2').textContent;
+                
+                quizModal.querySelector('h3').textContent = isFinal ? titleText : `Latihan Singkat ${titleText}`;
+                quizModal.style.display = 'block';
+                
+                renderQuestion(currentQuestionIndex);
+                updateProgress();
+            };
+            
+            // Event Listener Latihan Singkat (Modul 1-4)
+            document.querySelectorAll('.btn-latihan').forEach(button => {
+                const modulNum = button.getAttribute('data-modul');
+                if (modulNum !== '5') {
+                     button.addEventListener('click', () => {
+                        startQuiz(modulNum);
+                        playClickSound();
+                    });
+                }
+            });
+            
+            // Event Listener Uji Kompetensi (Modul 5)
+            startQuizBtn.addEventListener('click', () => {
+                startQuiz('5');
+                playClickSound();
+            });
+            
+            // Tombol Next Question (Digunakan untuk Final dan Latihan)
+            nextQuestionBtn.addEventListener('click', () => {
+                playClickSound();
+                const totalQuestions = quizMode === 'final' ? NUM_QUESTIONS_FINAL : NUM_QUESTIONS_LATIHAN;
+                const isAnswered = userAnswers[currentQuestionIndex] !== null;
+
+                if (!isAnswered) {
+                    showNotification('Pilih jawaban/Cek Jawaban sebelum melanjutkan!', 'error');
+                    return;
+                }
+
+                if (currentQuestionIndex < totalQuestions - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion(currentQuestionIndex);
+                    updateProgress();
+                } else if (currentQuestionIndex === totalQuestions - 1 && isAnswered) {
+                    // Sesi Latihan/Ujian berakhir
+                    currentQuestionIndex++; // Pindah ke hasil
+                    updateProgress();
+                    displayFinalResult(quizMode);
+                }
+            });
+
+            // Tombol Submit Quiz (Hanya untuk Final)
+            submitQuizBtn.addEventListener('click', () => {
+                playClickSound();
+                if (quizMode === 'final' && userAnswers[currentQuestionIndex] === null) {
+                    showNotification("Anda belum menjawab soal terakhir!", 'error');
+                    return;
+                }
+                
+                // Pastikan soal terakhir sudah terekam di userAnswers
+                const form = document.getElementById('quiz-form');
+                const selected = form.querySelector('input[name="answer"]:checked');
+                if (selected) userAnswers[currentQuestionIndex] = selected.value;
+
+                currentQuestionIndex = NUM_QUESTIONS_FINAL;
+                updateProgress(); 
+                displayFinalResult('final');
+            });
+
+
+            // === 6. Logika Asisten AI (Dipertahankan) ===
+            const knowledgeBase = {
+                "transformasi": "Geometri Transformasi adalah proses perubahan posisi atau bentuk dari suatu objek geometri tanpa mengubah bentuk dasarnya (kecuali Dilatasi). Ada 4 jenis utama: **Translasi, Refleksi, Rotasi, dan Dilatasi**.",
+                "translasi": "Translasi adalah pergeseran objek. Titik (x, y) akan bergeser menjadi (x', y') = (x + a, y + b), di mana (a, b) adalah vektor pergeseran.",
+                "refleksi": "Refleksi adalah pencerminan objek terhadap suatu garis (disebut sumbu cermin). Objek dan bayangannya memiliki jarak yang sama dari sumbu cermin. Contohnya: cermin pada garis y=x.",
+                "rotasi": "Rotasi adalah perputaran objek pada titik pusat tertentu (Pusat Rotasi) dengan sudut putar tertentu. Jika diputar 90° berlawanan arah jarum jam pada titik (0,0), titik (x, y) menjadi (-y, x).",
+                "dilatasi": "Dilatasi adalah perkalian yang mengubah ukuran (memperbesar atau memperkecil) objek tanpa mengubah bentuknya. Rumusnya melibatkan faktor skala (k) dan titik pusat. Titik (x,y) menjadi (kx, ky) jika pusatnya (0,0).",
+                "etnomatematika": "Etnomatematika adalah kajian matematika yang terkait dengan budaya. Dalam konteks **tari tradisional**, Geometri Transformasi sangat terlihat! Rotasi terjadi pada gerakan memutar badan, Refleksi terlihat pada gerakan tangan dan kaki yang simetris, dan Translasi terjadi saat penari berpindah posisi di panggung.",
+                "pergeseran": "Pergeseran sama dengan **Translasi**. Lihat jawaban untuk Translasi.",
+                "pencerminan": "Pencerminan sama dengan **Refleksi**. Lihat jawaban untuk Refleksi.",
+                "perputaran": "Perputaran sama dengan **Rotasi**. Lihat jawaban untuk Rotasi.",
+                "perkalian": "Perkalian sama dengan **Dilatasi**. Lihat jawaban untuk Dilatasi.",
+            };
+
+            const getAIResponse = (question) => {
+                const lowerCaseQuestion = question.toLowerCase();
+                let bestMatchKey = null;
+
+                for (const key in knowledgeBase) {
+                    if (lowerCaseQuestion.includes(key) && (bestMatchKey === null || key.length > bestMatchKey.length)) {
+                        bestMatchKey = key;
+                    }
+                }
+
+                if (bestMatchKey) {
+                    return `**Jawaban AI untuk ${bestMatchKey.toUpperCase()}**:\n${knowledgeBase[bestMatchKey]}`;
+                } else {
+                    return "Maaf, saya hanya bisa menjawab pertanyaan seputar **Translasi, Refleksi, Rotasi, Dilatasi, Geometri Transformasi, dan Etnomatematika Tari Tradisional**. Coba ajukan pertanyaan yang lebih spesifik!";
+                }
+            };
+            
+            aiSendBtn.addEventListener('click', () => {
+                const question = aiQuestionInput.value.trim();
+                aiResponseArea.innerHTML = '';
+                playClickSound();
+
+                if (question.length === 0) {
+                    aiResponseArea.innerHTML = '<p style="color: var(--color-error);">Masukkan pertanyaan Anda terlebih dahulu.</p>';
+                    return;
+                }
+                
+                aiSendBtn.disabled = true;
+                aiQuestionInput.disabled = true;
+                aiResponseArea.classList.add('loading');
+                aiResponseArea.innerHTML = `<p>Asisten AI sedang memproses pertanyaan Anda: "${question}"...</p>`;
+
+                setTimeout(() => {
+                    const answer = getAIResponse(question);
+                    
+                    aiResponseArea.classList.remove('loading');
+                    aiResponseArea.innerHTML = `<p>${answer.replace(/\n/g, '<br>')}</p>`; 
+                    
+                    aiSendBtn.disabled = false;
+                    aiQuestionInput.disabled = false;
+                    aiQuestionInput.value = ''; 
+                }, 1500); 
+            });
+
+            aiToggleBtn.addEventListener('click', () => {
+                aiModal.style.display = 'block';
+                aiQuestionInput.focus(); 
+                playClickSound();
+            });
+
+            // Re-apply click sound to generic module buttons (Dipertahankan)
+            document.querySelectorAll('.btn').forEach(button => {
+                 if (button !== sidebarToggle && button !== themeToggle && button !== aiSendBtn && button !== startQuizBtn && button !== startGameBtn && button !== checkGameBtn && button !== nextWordBtn) {
+                     button.addEventListener('click', (e) => {
+                        playClickSound(); 
+                        showNotification(`Menuju konten ${e.currentTarget.textContent} (Simulasi)`, 'default');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
